@@ -3,7 +3,7 @@ module.exports=function(req,res,next){
     const token=req.header("token");
     if(!token) return res.status(401).json({message:"Authorization failed"});
     try{
-        const decoded=jwt.verify(token,"nprsspl");
+        const decoded=jwt.verify(token,"MonalCreationInventorymanagementcodetrue");
         req.user=decoded.emailid;
     next();
     }catch(e){

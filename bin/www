@@ -4,13 +4,12 @@
  * Module dependencies.
  */
 
-var app = require('../src/loaders/expressConfig');//this will load the main Express app
-var debug = require('debug')('ibs:server');
+var app = require('../src/loaders/expressConfig');
+var debug = require('debug')('monalcreationbackend:server');
 var http = require('http');
-var mongoConfig=require('../src/loaders/mongoConfig')();// this will load mongo configurations automatically
+
+var mongoConfig=require('../src/loaders/mongoConfig')();
 var config=require('../src/config');//this will fetch the congiguration from config file
-
-
 /**
  * Get port from environment and store in Express.
  */
