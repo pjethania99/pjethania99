@@ -1,7 +1,7 @@
 const config={
     port:'3001',
-    databaseURL:'mongodb+srv://mcAdmin:dsVRQWiFnOrJ8CaC@cluster0.fejz8.mongodb.net/monaalCreation?retryWrites=true&w=majority',    
+    databaseURL:'mongodb://127.0.0.1:27017/?readPreference=primary&appname=MongoDB%20Compass&ssl=false',
+    databaseURL:'mongodb://127.0.0.1:27017/ibs',
+
 }
-
-
-module.exports=config;
+module.exports=config; 

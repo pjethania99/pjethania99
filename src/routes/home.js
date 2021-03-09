@@ -17,12 +17,11 @@ router.get('/getuser', function(req, res, next) {
 /*save user*/
 router.post('/saveuser',function(req,res,next){
   
-  
-  
+    
   var newuser= new users(
     {
           name:req.body.name,
-          section:req.body.name,
+          section:req.body.section,
           roll:req.body.roll
     });
 

@@ -1,13 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var ContactInfo=require('../models/ContactInfo');
-const bcrypt=require('bcrypt');//to encrypt the password recived by the user 
-const jwt=require("jsonwebtoken");//jason web tocken will be used
-var auth=require('../middleware/auth');//to use authorization fucntion
-const {check,validationResult}=require('express-validator/check');//to check for a validation while registering 
+var auth=require('../middleware/auth');
 
 /* GET Contactinfo. */
-router.get('/getContactInfo',auth, function(req, res, next) {
+router.get('/getContactInfo',auth,function(req, res, next) {
   ContactInfo.find().then(
     data=>{res.json(data);
     })
@@ -19,10 +16,8 @@ router.get('/getContactInfo',auth, function(req, res, next) {
 });
 
 /*save Contactinfo*/
-router.post('/saveContactInfo',function(req,res,next){
-  
-  
-  
+router.post('/saveContactInfo',auth,function(req,res,next){
+  console.log(req.body);
   var contactinfo= new ContactInfo(
     {
           HouseNumber:req.body.HouseNumber,
@@ -44,27 +39,26 @@ contactinfo.save(function(err,result){
 
 })
 
-/* PUT Contactinfo. */
-
-router.put('/putContactinfo',function(req,res){
-  users.findOneAndUpdate({"name":req.body.name},req.body).then(
-    res.json("user updated")
-  )
-});
-
-
-
 /*Delete Contactinfo*/
-router.delete('/deleteContactinfo',function(req,res,next){
+router.delete('/deleteContactInfo',auth,function(req,res,next){
 
-  console.log(req.body.name);
-users.findOneAndDelete({"name":req.body.name},function(err,result){
+  console.log(req.body.HouseNumber);
+ContactInfo.findOneAndDelete({"HouseNumber":req.body.HouseNumber},function(err,result){
   if(err){throw err}
-  res.send("user deleted");
+  res.send("House Number deleted");
 })
 
 })
 
+router.put('/editContactInfo',auth,function(req,res,next){
+  var HouseNumber=req.body.HouseNumber;
+  var Street=req.body.Street;
+
+ ContactInfo.findOneAndUpdate({"HouseNumber":"1167"},{"HouseNumber":HouseNumber,"Street":Street}).then(
+   res.json("details updated")
+ )
+
+})
 
 
 module.exports = router;

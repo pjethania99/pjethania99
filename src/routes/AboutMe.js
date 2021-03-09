@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var AboutMe=require('../models/AboutMe');
+var auth=require('../middleware/auth');
 
 /* GET AboutMe. */
-router.get('/getAboutMe', function(req, res, next) {
+router.get('/getAboutMe',auth,function(req, res, next) {
   AboutMe.find().then(
     data=>{res.json(data);
     })
@@ -15,7 +16,8 @@ router.get('/getAboutMe', function(req, res, next) {
 });
 
 /*save AboutMe*/
-router.post('/saveAboutMe',function(req,res,next){
+router.post('/saveAboutMe',auth,function(req,res,next){ 
+  console.log(req.body);
   var aboutme= new AboutMe(
     {
           AboutYourSelf:req.body.AboutYourSelf
@@ -29,17 +31,9 @@ aboutme.save(function(err,result){
 
 })
 
-/* PUT AboutMe */
-
-router.put('/putAboutMe',function(req,res,next){
-  var aboutme= new AboutMe
-  users.findOneAndUpdate({"name":req.body.name},req.body).then(
-    res.json("aboutme updated")
-  )
-});
 
 /*Delete AboutMe*/
-router.delete('/deleteAboutMe',function(req,res,next){
+router.delete('/deleteAboutMe',auth,function(req,res,next){
 
   console.log(req.body.AboutYourSelf);
 AboutMe.findOneAndDelete({"AboutYourSelf":req.body.AboutYourSelf},function(err,result){
@@ -48,6 +42,15 @@ AboutMe.findOneAndDelete({"AboutYourSelf":req.body.AboutYourSelf},function(err,r
 })
 
 })
+
+router.put('/editAboutMe/:id',auth,function(req,res,next){
+  console.log(req.params.id);
+  AboutMe.findOneAndUpdate({_id:req.params.id},req.body).then(
+   res.json("details updated")
+  )
+
+})
+
 
 
 

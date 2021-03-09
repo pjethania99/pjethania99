@@ -6,6 +6,8 @@ const jwt=require("jsonwebtoken");//jason web tocken will be used
 var auth=require('../middleware/auth');//to use authorization fucntion
 const {check,validationResult}=require('express-validator/check');//to check for a validation while registering 
 
+
+
 router.get('/getuser',auth,function(req,res,next){
     users.find().then(
         data=>{res.json(data)}
@@ -23,14 +25,13 @@ router.post("/signup",
 [
     check("emailid","Please enter a valid email").isEmail(),
     check("password","please enter a valid password").isLength({min:6})
-],  
+],
 
 async(req,res)=>{
     console.log("post with auth called");
     const errors=validationResult(req);
     if(!errors.isEmpty()){
-        return res.status(400).json({
-            errors:errors.array()
+        return res.status(400).json({errors:errors.array()
         });
     }
 
@@ -91,54 +92,52 @@ try{
 
 
 router.post("/signin",
-
 [
-    check("emailid","Please enter a valid email").isEmail(),
-    check("password","please enter a valid password").isLength({min:6})
-],
+    check("emailid", "please enter a valid email id").isEmail(),
+    check("password","minimum 6 characters required").isLength({min:6})
 
+],
 async(req,res)=>{
-    const errors=validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({errors:errors.array()
-        });
+    const error=validationResult(req);
+    if(!error.isEmpty()){
+        return res.status(400).json({error:error.array()
+        })
     }
 
     const{emailid,password}=req.body;
     try{
-        let existinguser=await users.findOne({
-            emailid
-        });
-        if(!existinguser){
-            return res.status(401).json({msg:"user does not exists"});
+        let users=await user.findOne(
+            {emailid});
+            if(!users)
+            {
+                return req.status(401).json({message:"user does not exist"});
+            }
+            const isMatch=await bcrypt.compare(password,users.password);
+            if(!isMatch)
+            return res.status(402).json({message:"incorrect password"});
 
-        }
+            const payload={
+                "emailid":users.emailid,
+            };
 
-        const isMatch=await bcrypt.compare(password,existinguser.password);
+            jwt.sign(payload,"nprsspl",
+            (err,token)=>{
+                if(err)throw err;
+                res.status(200).json({
+                    token
+                });
+            }
+            
+            );
 
-        if(!isMatch)
-        return res.status(402).json({message:"incorrect password"});
-
-
-        const payload={
-            "emailid":existinguser.emailid,
-        };
-
-        jwt.sign(payload,"nprsspl",
-        (err,token)=>{
-            if(err)throw err  ;
-            res.status(200).json({
-                token
-            }); 
-        });
     }catch(e){
         console.error(e);
         res.status(500).json({
             message:"Server error"
         });
     }
-} 
+}
+
 );
 
-module.exports=router; 
-
+module.exports=router;
